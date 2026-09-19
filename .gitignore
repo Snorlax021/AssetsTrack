@@ -1,0 +1,4 @@
+BackEnd/node_modules/
+BackEnd/.env
+*.log
+.DS_Store
