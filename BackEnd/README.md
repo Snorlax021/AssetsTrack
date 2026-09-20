@@ -3,8 +3,8 @@
 ## XAMPP setup
 
 1. Start **MySQL** in the XAMPP Control Panel.
-2. Open phpMyAdmin and import [`schema.sql`](schema.sql). It creates the `assesttrack` database, authentication tables, indexes, foreign keys, and starter categories/locations. If you already imported the older schema, import [`auth-migration.sql`](auth-migration.sql) once or recreate the database first so `users.full_name`, `users.password_hash`, and `auth_sessions` exist.
-3. Install Node.js, then run these commands from this directory:
+2. Open phpMyAdmin and import [`schema.sql`](schema.sql). It creates the `assettrack` database, authentication tables, indexes, foreign keys, and starter categories/locations. If you already imported the older schema, import [`auth-migration.sql`](auth-migration.sql) once, then import [`assettrack-feature-migration.sql`](assettrack-feature-migration.sql) to add tags, QR support, history, audit, depreciation, and maintenance fields.
+3. Install Node.js, then run these commands from the `BackEnd` folder:
 
 ```powershell
 Copy-Item .env.example .env
@@ -12,7 +12,7 @@ npm install
 npm start
 ```
 
-The application is served at `http://localhost:3000`. Open that URL rather than opening `FrontEnd/index.html` directly, because the frontend uses the backend `/api` routes. On Windows PowerShell where script execution is restricted, use `npm.cmd install` and `npm.cmd start`.
+The application is served at `http://localhost:3000`. Open that URL rather than opening `FrontEnd/index.html` directly, because the frontend uses the backend `/api` routes. On Windows PowerShell where script execution is restricted, use `npm.cmd` in place of `npm`.
 
 If the MySQL root account has a password, set it in `.env` as `DB_PASSWORD`. Change `DB_HOST`, `DB_PORT`, or `DB_NAME` there when using a non-default XAMPP configuration.
 

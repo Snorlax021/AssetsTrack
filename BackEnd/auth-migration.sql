@@ -1,4 +1,4 @@
-USE assesttrack;
+USE assettrack;
 
 ALTER TABLE users
   ADD COLUMN IF NOT EXISTS full_name VARCHAR(120) NULL,

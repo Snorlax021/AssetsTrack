@@ -68,6 +68,8 @@ a {
   width: 216px; flex-shrink: 0; background: var(--surface);
   border-right: 1px solid var(--line); padding: 20px 14px;
   display: flex; flex-direction: column;
+  position: sticky; top: 0; height: 100vh; align-self: flex-start;
+  overflow-y: auto;
 }
 .brand { 
   display: flex; 
@@ -267,6 +269,21 @@ a {
   grid-template-columns: 1.3fr 1fr; 
   gap: 14px; 
 }
+
+.asset-detail { border-top: 1px solid var(--line); margin-top: 18px; padding-top: 18px; }
+.detail-head, .detail-grid { display: flex; justify-content: space-between; gap: 20px; }
+.detail-grid { justify-content: flex-start; margin: 18px 0; }
+.detail-actions { display: flex; gap: 8px; align-items: flex-start; }
+.asset-qr { width: 180px; height: 180px; border: 1px solid var(--line); padding: 8px; background: white; }
+.detail-grid p { margin: 0 0 10px; }
+.timeline { border-left: 2px solid var(--line); list-style: none; margin: 0; padding: 0 0 0 18px; }
+.timeline li { margin: 0 0 12px; }
+.timeline span { color: var(--ink-faint); display: block; font-size: 12px; margin-top: 3px; }
+.breakdown-list p { display: flex; justify-content: space-between; border-bottom: 1px solid var(--line); padding: 8px 0; margin: 0; }
+.status.repair, .status.under_repair, .status.overdue { color: #9a5b00; background: #fff1d6; }
+.status.retired { color: #a12c32; background: #ffe0e2; }
+
+@media (max-width: 700px) { .detail-head, .detail-grid { display: block; } .detail-actions { margin-top: 12px; } .asset-qr { width: 150px; height: 150px; } }
 
 @media (max-width: 900px) { 
   .panel-grid { 

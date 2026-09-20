@@ -131,6 +131,11 @@
       </section>
 
       <section class="panel-grid">
+        <article class="panel"><h3>Assets by category</h3><div id="category-breakdown" class="breakdown-list"></div></article>
+        <article class="panel"><h3>Assets by location</h3><div id="location-breakdown" class="breakdown-list"></div></article>
+      </section>
+
+      <section class="panel-grid">
         <article class="panel activity-panel">
           <h3>Recent activity</h3>
           <p class="empty-cell">No activity yet.</p>
@@ -148,10 +153,9 @@
     <section class="content" data-page="assets" hidden>
       <section class="panel">
         <h3>Assets</h3>
-        <div class="toolbar"><button class="button primary admin-only" id="new-asset">Add asset</button></div>
+        <div class="toolbar"><button class="button primary admin-only" id="new-asset">Add asset</button><span class="muted">Tags are generated automatically by category.</span></div>
         <form class="data-form" id="asset-form" hidden>
           <input type="hidden" name="id">
-          <label class="admin-edit-only">Tag code<input name="tag_code" required maxlength="60"></label>
           <label class="admin-edit-only">Name<input name="name" required maxlength="160"></label>
           <label class="admin-edit-only">Category<select name="category_id" id="asset-category" required>
             <option value="" selected disabled>Choose category</option>
@@ -163,8 +167,12 @@
           </select></label>
           <label>Location<select name="location_id" id="asset-location"><option value="">Unassigned</option></select></label>
           <label>Assigned to<select name="assigned_to" id="asset-assignee"><option value="">Unassigned</option></select></label>
-          <label>Condition<select name="condition_status"><option value="working">Working</option><option value="under_repair">Under repair</option><option value="retired">Retired</option></select></label>
+          <label>Condition<select name="status"><option value="working">Working</option><option value="repair">Repair</option><option value="retired">Retired</option></select></label>
           <label class="admin-edit-only">Purchase cost<input name="purchase_cost" type="number" min="0" step="0.01" value="0"></label>
+          <label class="admin-edit-only">Serial number<input name="serial_number" maxlength="160"></label>
+          <label class="admin-edit-only">Supplier<input name="supplier" maxlength="160"></label>
+          <label class="admin-edit-only">Useful life (years)<input name="useful_life_years" type="number" min="0.1" step="0.1" value="5"></label>
+          <label class="admin-edit-only">Salvage value<input name="salvage_value" type="number" min="0" step="0.01" value="0"></label>
           <label class="admin-edit-only">Current value<input name="current_value" type="number" min="0" step="0.01" value="0"></label>
           <label class="admin-edit-only">Purchase date<input name="purchase_date" type="date"></label>
           <label class="wide admin-edit-only">Description<textarea name="description" rows="2"></textarea></label>
@@ -187,6 +195,7 @@
             <tbody id="assets-body"></tbody>
           </table>
         </div>
+        <section id="asset-detail" class="asset-detail" hidden></section>
       </section>
     </section>
 
@@ -194,7 +203,7 @@
     <section class="content" data-page="maintenance" hidden>
       <section class="panel">
         <h3>Maintenance</h3>
-        <div class="toolbar"><button class="button primary admin-only" id="new-maintenance">Schedule maintenance</button></div>
+        <div class="toolbar"><button class="button primary admin-only" id="new-maintenance">Schedule maintenance</button><select id="maintenance-filter" aria-label="Filter maintenance"><option value="">All tasks</option><option value="upcoming">Upcoming</option><option value="overdue">Overdue</option><option value="completed">Completed</option></select></div>
         <form class="data-form" id="maintenance-form" hidden>
           <input type="hidden" name="id">
           <label>Asset<select name="asset_id" id="maintenance-asset" required></select></label>
