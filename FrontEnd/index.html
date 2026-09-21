@@ -1,4 +1,4 @@
-git push<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -42,7 +42,7 @@ git push<!DOCTYPE html>
       <a href="#" class="nav-item active" data-page="dashboard"> <i class="bi bi-window-desktop me-3"></i> Dashboard </a> 
       <a href="#" class="nav-item" data-page="assets"> <i class="bi bi-box-seam me-3"></i> Assets </a>
       <a href="#" class="nav-item" data-page="maintenance"> <i class="bi bi-wrench me-3"></i> Maintenance </a>
-      <a href="#" class="nav-item" data-page="audit"> <i class="bi bi-file-earmark-medical me-3"></i> Audit Log </a>
+      <a href="#" class="nav-item management-only" data-page="audit"> <i class="bi bi-file-earmark-medical me-3"></i> Audit Log </a>
       <a href="#" class="nav-item admin-only" data-page="users" hidden> <i class="bi bi-people me-3"></i> Users </a>
     </nav>
 
@@ -64,6 +64,7 @@ git push<!DOCTYPE html>
         <p class="topbar-sub">Portfolio overview and activity</p>
       </div>
       <div class="spacer"></div>
+      <button id="print-report" class="button manager-or-admin" type="button">Print / PDF</button>
       <input id="asset-search" class="scanbox" type="search" placeholder="Scan or type tag code..." aria-label="Search assets">
     </header>
 
@@ -78,7 +79,7 @@ git push<!DOCTYPE html>
     <!-- ============ DASHBOARD SECTION ============ -->
     <section class="content" data-page="dashboard">
 
-      <section class="kpi-grid" aria-label="Key metrics">
+      <section class="kpi-grid company-dashboard" aria-label="Key metrics">
         <article class="kpi-card">
           <p class="kpi-label">Total Assets</p>
           <p class="kpi-value">—</p>
@@ -111,7 +112,7 @@ git push<!DOCTYPE html>
         </article>
       </section>
 
-      <section class="panel">
+      <section class="panel company-dashboard">
         <h3>Status breakdown</h3>
         <div class="bar-row">
           <span class="bar-label">Working</span>
@@ -130,15 +131,15 @@ git push<!DOCTYPE html>
         </div>
       </section>
 
-      <section class="panel-grid">
+      <section class="panel-grid company-dashboard">
         <article class="panel"><h3>Assets by category</h3><div id="category-breakdown" class="breakdown-list"></div></article>
         <article class="panel"><h3>Assets by location</h3><div id="location-breakdown" class="breakdown-list"></div></article>
       </section>
 
-      <section class="panel-grid">
+      <section class="panel-grid company-dashboard">
         <article class="panel activity-panel">
           <h3>Recent activity</h3>
-          <p class="empty-cell">No activity yet.</p>
+          <div id="recent-activity-list" class="activity-list"><p class="empty-cell">No activity yet.</p></div>
         </article>
 
         <article class="panel">
@@ -147,37 +148,25 @@ git push<!DOCTYPE html>
         </article>
       </section>
 
+      <section class="panel staff-dashboard" hidden>
+        <h3>My field work</h3>
+        <p class="muted">Your dashboard is limited to assets and maintenance assigned to you.</p>
+        <div class="staff-stat-grid">
+          <article><span>Total assigned assets</span><strong id="staff-total-assets">0</strong></article>
+          <article><span>Working</span><strong id="staff-working-assets">0</strong></article>
+          <article><span>Needs attention</span><strong id="staff-repair-assets">0</strong></article>
+          <article><span>Maintenance due</span><strong id="staff-maintenance-due">0</strong></article>
+        </div>
+        <div id="staff-maintenance-summary" class="breakdown-list"></div>
+      </section>
+
     </section>
 
     <!-- ============ ASSETS SECTION ============ -->
     <section class="content" data-page="assets" hidden>
       <section class="panel">
         <h3>Assets</h3>
-        <div class="toolbar"><button class="button primary admin-only" id="new-asset">Add asset</button><span class="muted">Tags are generated automatically by category.</span></div>
-        <form class="data-form" id="asset-form" hidden>
-          <input type="hidden" name="id">
-          <label class="admin-edit-only">Name<input name="name" required maxlength="160"></label>
-          <label class="admin-edit-only">Category<select name="category_id" id="asset-category" required>
-            <option value="" selected disabled>Choose category</option>
-            <option value="1">Computer Equipment</option>
-            <option value="2">Office Furniture</option>
-            <option value="3">Vehicles</option>
-            <option value="4">Tools</option>
-            <option value="5">Other</option>
-          </select></label>
-          <label>Location<select name="location_id" id="asset-location"><option value="">Unassigned</option></select></label>
-          <label>Assigned to<select name="assigned_to" id="asset-assignee"><option value="">Unassigned</option></select></label>
-          <label>Condition<select name="status"><option value="working">Working</option><option value="repair">Repair</option><option value="retired">Retired</option></select></label>
-          <label class="admin-edit-only">Purchase cost<input name="purchase_cost" type="number" min="0" step="0.01" value="0"></label>
-          <label class="admin-edit-only">Serial number<input name="serial_number" maxlength="160"></label>
-          <label class="admin-edit-only">Supplier<input name="supplier" maxlength="160"></label>
-          <label class="admin-edit-only">Useful life (years)<input name="useful_life_years" type="number" min="0.1" step="0.1" value="5"></label>
-          <label class="admin-edit-only">Salvage value<input name="salvage_value" type="number" min="0" step="0.01" value="0"></label>
-          <label class="admin-edit-only">Current value<input name="current_value" type="number" min="0" step="0.01" value="0"></label>
-          <label class="admin-edit-only">Purchase date<input name="purchase_date" type="date"></label>
-          <label class="wide admin-edit-only">Description<textarea name="description" rows="2"></textarea></label>
-          <div class="form-actions wide"><button class="button primary" type="submit">Save asset</button><button class="button" type="button" data-cancel="asset-form">Cancel</button></div>
-        </form>
+        <div class="toolbar"><div class="toolbar-actions"><button class="button primary admin-only" id="new-asset">Add asset</button><button class="button manager-or-admin" id="export-assets">Export CSV</button></div><span class="toolbar-note">Tags are generated automatically by category.</span></div>
         <div class="table-wrap">
           <table>
             <thead>
@@ -195,7 +184,6 @@ git push<!DOCTYPE html>
             <tbody id="assets-body"></tbody>
           </table>
         </div>
-        <section id="asset-detail" class="asset-detail" hidden></section>
       </section>
     </section>
 
@@ -203,16 +191,7 @@ git push<!DOCTYPE html>
     <section class="content" data-page="maintenance" hidden>
       <section class="panel">
         <h3>Maintenance</h3>
-        <div class="toolbar"><button class="button primary admin-only" id="new-maintenance">Schedule maintenance</button><select id="maintenance-filter" aria-label="Filter maintenance"><option value="">All tasks</option><option value="upcoming">Upcoming</option><option value="overdue">Overdue</option><option value="completed">Completed</option></select></div>
-        <form class="data-form" id="maintenance-form" hidden>
-          <input type="hidden" name="id">
-          <label>Asset<select name="asset_id" id="maintenance-asset" required></select></label>
-          <label>Task<input name="task" required maxlength="255"></label>
-          <label>Scheduled date<input name="scheduled_date" type="date" required></label>
-          <label>Status<select name="status"><option value="scheduled">Scheduled</option><option value="in_progress">In progress</option><option value="completed">Completed</option><option value="cancelled">Cancelled</option></select></label>
-          <label class="wide">Notes<textarea name="notes" rows="2"></textarea></label>
-          <div class="form-actions wide"><button class="button primary" type="submit">Save maintenance</button><button class="button" type="button" data-cancel="maintenance-form">Cancel</button></div>
-        </form>
+        <div class="toolbar"><div class="toolbar-actions"><button class="button primary schedule-access" id="new-maintenance">Schedule maintenance</button><button class="button manager-or-admin" id="export-maintenance">Export CSV</button><select id="maintenance-filter" aria-label="Filter maintenance"><option value="">All tasks</option><option value="upcoming">Upcoming</option><option value="overdue">Overdue</option><option value="completed">Completed</option></select></div><span class="toolbar-note">Plan the next service visit and assign it to a field worker.</span></div>
         <div class="table-wrap">
           <table>
             <thead>
@@ -222,6 +201,7 @@ git push<!DOCTYPE html>
                 <th>Task</th>
                 <th>Scheduled</th>
                 <th>Status</th>
+                <th>Approval</th>
                 <th>Action</th>
               </tr>
             </thead>
@@ -240,20 +220,117 @@ git push<!DOCTYPE html>
     </section>
 
     <section class="content" data-page="users" hidden>
-      <section class="panel">
-        <h3>User management</h3>
-        <form class="data-form" id="user-form">
-          <label>Full name<input name="full_name" required maxlength="120"></label>
-          <label>Email<input name="email" type="email" required maxlength="190"></label>
-          <label>Password<input name="password" type="password" required minlength="8" maxlength="128"></label>
-          <label>Role<select name="role"><option value="manager">Manager / Supervisor</option><option value="staff">Staff / Encoder</option><option value="viewer">Viewer / Auditor</option><option value="admin">Admin</option></select></label>
-          <div class="form-actions wide"><button class="button primary" type="submit">Create user</button></div>
-        </form>
-        <div class="table-wrap"><table><thead><tr><th>Name</th><th>Email</th><th>Role</th><th>Created</th></tr></thead><tbody id="users-body"></tbody></table></div>
+      <section class="user-entry-grid" aria-label="User management options">
+        <button class="user-entry-card" type="button" data-open-user-modal="add">
+          <span class="user-entry-icon"><i class="bi bi-person-plus"></i></span>
+          <span><strong>Add New User</strong><small>Create an account and assign a role.</small></span>
+          <i class="bi bi-arrow-up-right user-entry-arrow"></i>
+        </button>
+        <button class="user-entry-card" type="button" data-open-user-modal="manage">
+          <span class="user-entry-icon"><i class="bi bi-people"></i></span>
+          <span><strong>Manage Users</strong><small>View, filter, and manage existing accounts.</small></span>
+          <span id="user-count" class="user-entry-count">0 users</span>
+          <i class="bi bi-arrow-up-right user-entry-arrow"></i>
+        </button>
       </section>
     </section>
 
   </main>
+</div>
+
+<div id="add-user-modal" class="modal-backdrop" hidden>
+  <section class="modal-card user-modal-card" role="dialog" aria-modal="true" aria-labelledby="add-user-title">
+    <div class="modal-head"><div><p class="eyebrow">User management</p><h2 id="add-user-title">Add New User</h2></div><button class="icon-button" type="button" data-close-modal aria-label="Close add user">×</button></div>
+    <p id="user-form-error" class="modal-error" role="alert" hidden></p>
+    <p id="user-form-success" class="modal-success" role="status" hidden></p>
+    <form class="data-form modal-form" id="user-form">
+      <label>Full name<input name="full_name" required maxlength="120"></label>
+      <label>Email<input name="email" type="email" required maxlength="190"></label>
+      <label>Password<input name="password" type="password" required minlength="8" maxlength="128"></label>
+      <label>Role<select name="role"><option value="manager">Manager / Supervisor</option><option value="staff">Staff / Encoder</option><option value="admin">Admin</option></select></label>
+      <div class="form-actions wide"><button class="button primary" type="submit">Create user</button><button class="button" type="button" data-close-modal>Cancel</button></div>
+    </form>
+  </section>
+</div>
+
+<div id="manage-users-modal" class="modal-backdrop" hidden>
+  <section class="modal-card modal-card-wide user-manage-modal-card" role="dialog" aria-modal="true" aria-labelledby="manage-users-title">
+    <div class="modal-head"><div><p class="eyebrow">User management</p><h2 id="manage-users-title">Manage Users</h2></div><button class="button" type="button" data-close-modal>Close</button></div>
+    <div class="user-filter-bar"><label for="user-role-filter">Filter by role</label><select id="user-role-filter"><option value="all">All roles</option><option value="admin">Admin</option><option value="manager">Manager / Supervisor</option><option value="staff">Staff / Encoder</option></select></div>
+    <div class="table-wrap"><table><thead><tr><th>Name</th><th>Email</th><th>Role</th><th>Status</th><th>Created</th><th>Actions</th></tr></thead><tbody id="users-body"></tbody></table></div>
+  </section>
+</div>
+
+<div id="asset-form-modal" class="modal-backdrop" hidden>
+  <section class="modal-card modal-card-wide asset-form-modal-card" role="dialog" aria-modal="true" aria-labelledby="asset-form-title">
+    <div class="modal-head"><div><p class="eyebrow">Asset registry</p><h2 id="asset-form-title">Register asset</h2></div><button class="icon-button" type="button" data-close-modal aria-label="Close asset form">×</button></div>
+    <p id="asset-form-error" class="modal-error" role="alert" hidden></p>
+    <form class="data-form modal-form" id="asset-form">
+      <input type="hidden" name="id">
+      <label class="admin-edit-only">Name<input name="name" required maxlength="160"></label>
+      <label class="admin-edit-only">Category<select name="category_id" id="asset-category" required>
+        <option value="" selected disabled>Choose category</option>
+        <option value="1">Computer Equipment</option>
+        <option value="2">Office Furniture</option>
+        <option value="3">Vehicles</option>
+        <option value="4">Tools</option>
+        <option value="5">Other</option>
+      </select></label>
+      <label>Location<select name="location_id" id="asset-location"><option value="">Unassigned</option></select></label>
+      <label>Assigned to<select name="assigned_to" id="asset-assignee"><option value="">Unassigned</option></select></label>
+      <label>Condition<select name="status"><option value="working">Working</option><option value="repair">Repair</option><option value="retired">Retired</option></select></label>
+      <label class="admin-edit-only">Purchase cost<input name="purchase_cost" type="number" min="0" step="0.01" value="0"></label>
+      <label class="admin-edit-only">Serial number<input name="serial_number" maxlength="160"></label>
+      <label class="admin-edit-only">Supplier<input name="supplier" maxlength="160"></label>
+      <label class="admin-edit-only">Useful life (years)<input name="useful_life_years" type="number" min="0.1" step="0.1" value="5"></label>
+      <label class="admin-edit-only">Salvage value<input name="salvage_value" type="number" min="0" step="0.01" value="0"></label>
+      <label class="admin-edit-only">Current value<input name="current_value" type="number" min="0" step="0.01" value="0"></label>
+      <label class="admin-edit-only">Purchase date<input name="purchase_date" type="date"></label>
+      <label class="wide admin-edit-only">Description<textarea name="description" rows="2"></textarea></label>
+      <div class="form-actions wide"><button class="button primary" type="submit">Save asset</button><button class="button" type="button" data-close-modal>Cancel</button></div>
+    </form>
+  </section>
+</div>
+
+<div id="asset-detail-modal" class="modal-backdrop" hidden>
+  <section class="modal-card modal-card-wide" role="dialog" aria-modal="true" aria-labelledby="asset-detail-title">
+    <div class="modal-head"><div><p class="eyebrow">Asset record</p><h2 id="asset-detail-title">Asset details</h2></div><div class="modal-head-actions"><button class="button" type="button" data-print-current-asset>Print tag label</button><button class="button" type="button" data-close-modal>Close</button></div></div>
+    <section id="asset-detail" class="asset-detail"></section>
+  </section>
+</div>
+
+<div id="maintenance-form-modal" class="modal-backdrop" hidden>
+  <section class="modal-card modal-card-wide maintenance-modal-card" role="dialog" aria-modal="true" aria-labelledby="maintenance-form-title">
+    <div class="modal-head"><div><p class="eyebrow">Maintenance planning</p><h2 id="maintenance-form-title">Schedule maintenance</h2></div><button class="icon-button" type="button" data-close-modal aria-label="Close maintenance form">×</button></div>
+    <p id="maintenance-form-error" class="modal-error" role="alert" hidden></p>
+    <form class="data-form modal-form" id="maintenance-form">
+      <input type="hidden" name="id">
+      <label>Asset<select name="asset_id" id="maintenance-asset" required></select></label>
+      <label>Task<input name="task" required maxlength="255"></label>
+      <label>Scheduled date<input name="scheduled_date" type="date" required></label>
+      <label>Status<select name="status"><option value="scheduled">Scheduled</option><option value="in_progress">In progress</option><option value="completed">Completed</option><option value="cancelled">Cancelled</option></select></label>
+      <label class="wide">Notes<textarea name="notes" rows="4"></textarea></label>
+      <div class="form-actions wide"><button class="button primary" type="submit">Save maintenance</button><button class="button" type="button" data-close-modal>Cancel</button></div>
+    </form>
+  </section>
+</div>
+
+<div id="confirm-modal" class="modal-backdrop" hidden>
+  <section class="modal-card confirm-modal-card" role="dialog" aria-modal="true" aria-labelledby="confirm-title">
+    <div class="modal-head"><div><p class="eyebrow">Please confirm</p><h2 id="confirm-title">Delete record?</h2></div><button class="icon-button" type="button" data-close-modal aria-label="Close confirmation">×</button></div>
+    <p id="confirm-message" class="modal-copy"></p>
+    <div class="form-actions"><button class="button" type="button" data-close-modal>Cancel</button><button id="confirm-action" class="button danger-action" type="button">Delete</button></div>
+  </section>
+</div>
+
+<div id="completion-modal" class="modal-backdrop" hidden>
+  <form id="completion-form" class="modal-card">
+    <div class="modal-head"><div><p class="eyebrow">Maintenance update</p><h2>Mark task complete</h2></div><button class="icon-button" type="button" data-close-completion aria-label="Close">×</button></div>
+    <p class="modal-copy">Add an optional completion note before closing this maintenance task.</p>
+    <input type="hidden" name="maintenance_id">
+    <label>Completion notes<textarea name="notes" rows="4" maxlength="2000" placeholder="What was checked or repaired?"></textarea></label>
+    <div class="form-actions"><button class="button" type="button" data-close-completion>Cancel</button><button class="button primary" type="submit">Mark complete</button></div>
+  </form>
 </div>
 
 <script src="app.js"></script>

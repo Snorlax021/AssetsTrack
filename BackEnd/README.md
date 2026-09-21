@@ -3,7 +3,7 @@
 ## XAMPP setup
 
 1. Start **MySQL** in the XAMPP Control Panel.
-2. Open phpMyAdmin and import [`schema.sql`](schema.sql). It creates the `assettrack` database, authentication tables, indexes, foreign keys, and starter categories/locations. If you already imported the older schema, import [`auth-migration.sql`](auth-migration.sql) once, then import [`assettrack-feature-migration.sql`](assettrack-feature-migration.sql) to add tags, QR support, history, audit, depreciation, and maintenance fields.
+2. Open phpMyAdmin and import [`schema.sql`](schema.sql). It is the complete database setup: authentication, assets, maintenance, location history, audit logs, depreciation fields, indexes, foreign keys, and starter categories/locations. For an existing installation created from an older schema, back up the database first and apply the required changes manually before using this consolidated schema.
 3. Install Node.js, then run these commands from the `BackEnd` folder:
 
 ```powershell
@@ -20,7 +20,7 @@ If the MySQL root account has a password, set it in `.env` as `DB_PASSWORD`. Cha
 
 The first registration becomes the initial `admin` account. After that, only an authenticated admin can register more users. Passwords are stored as salted Node.js `scrypt` hashes, never as plain text. Sessions are random tokens stored as hashes in MySQL, expire after eight hours, and are revoked when the user logs out.
 
-Role permissions are enforced by the backend. Admins have full access and can create users, assets, and maintenance records. Managers / Supervisors can see dashboards and audit logs and approve retirement, but cannot delete records. Staff / Encoders can update operational asset fields and mark maintenance complete, but cannot delete assets, view audit logs, or view financial values. Viewers / Auditors have read-only access to reports, financial values, and audit logs. The frontend hides controls as a convenience; the backend middleware is the actual security boundary.
+Role permissions are enforced by the backend. Admins have full access and can manage users, assets, and maintenance records. Managers / Supervisors can see dashboards and audit logs, approve maintenance and retirement, update operational asset fields, and view financial reports, but cannot manage users or delete records. Staff / Encoders can view and update only assigned assets, update location and condition, and mark assigned maintenance complete; they cannot view audit logs or financial values. New registrations remain pending until an admin approves them. The frontend hides controls as a convenience; the backend middleware is the actual security boundary.
 
 ## API
 

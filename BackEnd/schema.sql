@@ -17,6 +17,8 @@ CREATE TABLE IF NOT EXISTS users (
   email VARCHAR(190) NOT NULL UNIQUE,
   password_hash VARCHAR(255) NOT NULL,
   role VARCHAR(40) NOT NULL DEFAULT 'staff',
+  approval_status ENUM('pending', 'approved', 'rejected') NOT NULL DEFAULT 'approved',
+  is_active TINYINT(1) NOT NULL DEFAULT 1,
   created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB;
 CREATE TABLE IF NOT EXISTS auth_sessions (
@@ -65,21 +67,26 @@ CREATE TABLE IF NOT EXISTS maintenance_records (
   scheduled_date DATE NOT NULL,
   completed_date DATE,
   status ENUM('scheduled', 'in_progress', 'completed', 'cancelled') NOT NULL DEFAULT 'scheduled',
+  approval_status ENUM('pending', 'approved', 'rejected') NOT NULL DEFAULT 'approved',
+  approved_by INT UNSIGNED,
   notes TEXT,
   assigned_to INT UNSIGNED,
   created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   CONSTRAINT fk_maintenance_asset FOREIGN KEY (asset_id) REFERENCES assets(id) ON DELETE CASCADE,
   CONSTRAINT fk_maintenance_assigned_to FOREIGN KEY (assigned_to) REFERENCES users(id) ON DELETE SET NULL,
+  CONSTRAINT fk_maintenance_approved_by FOREIGN KEY (approved_by) REFERENCES users(id) ON DELETE SET NULL,
   INDEX idx_maintenance_date (scheduled_date), INDEX idx_maintenance_status (status)
 ) ENGINE=InnoDB;
 CREATE TABLE IF NOT EXISTS audit_logs (
   id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
   entity_type VARCHAR(40) NOT NULL,
   entity_id INT UNSIGNED,
-  action ENUM('created', 'updated', 'deleted') NOT NULL,
+  action VARCHAR(80) NOT NULL,
   details JSON,
+  actor INT UNSIGNED,
   created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  CONSTRAINT fk_audit_logs_actor FOREIGN KEY (actor) REFERENCES users(id) ON DELETE SET NULL,
   INDEX idx_audit_created (created_at), INDEX idx_audit_entity (entity_type, entity_id)
 ) ENGINE=InnoDB;
 
@@ -96,17 +103,16 @@ CREATE TABLE IF NOT EXISTS location_history (
   INDEX idx_location_history_asset (asset_id, changed_at)
 ) ENGINE=InnoDB;
 
-CREATE TABLE IF NOT EXISTS audit_log (
-  id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-  asset_id INT UNSIGNED,
-  action VARCHAR(80) NOT NULL,
-  details JSON,
-  actor INT UNSIGNED NOT NULL,
-  timestamp TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  CONSTRAINT fk_audit_log_asset FOREIGN KEY (asset_id) REFERENCES assets(id) ON DELETE CASCADE,
-  CONSTRAINT fk_audit_log_actor FOREIGN KEY (actor) REFERENCES users(id),
-  INDEX idx_audit_log_asset (asset_id, timestamp)
-) ENGINE=InnoDB;
+ALTER TABLE users
+  ADD COLUMN IF NOT EXISTS approval_status ENUM('pending', 'approved', 'rejected') NOT NULL DEFAULT 'approved',
+  ADD COLUMN IF NOT EXISTS is_active TINYINT(1) NOT NULL DEFAULT 1;
+UPDATE users SET approval_status = 'approved' WHERE approval_status IS NULL;
+UPDATE users SET is_active = 1 WHERE is_active IS NULL;
+
+ALTER TABLE maintenance_records
+  ADD COLUMN IF NOT EXISTS approval_status ENUM('pending', 'approved', 'rejected') NOT NULL DEFAULT 'approved',
+  ADD COLUMN IF NOT EXISTS approved_by INT UNSIGNED NULL;
 
 INSERT IGNORE INTO categories (name) VALUES ('Computer Equipment'), ('Office Furniture'), ('Vehicles'), ('Tools'), ('Other');
+INSERT IGNORE INTO categories (name) VALUES ('Laptop'), ('Forklift'), ('Printer');
 INSERT IGNORE INTO locations (name) VALUES ('Main Office'), ('Warehouse'), ('Field Office'), ('In Transit');
