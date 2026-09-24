@@ -113,6 +113,10 @@ ALTER TABLE maintenance_records
   ADD COLUMN IF NOT EXISTS approval_status ENUM('pending', 'approved', 'rejected') NOT NULL DEFAULT 'approved',
   ADD COLUMN IF NOT EXISTS approved_by INT UNSIGNED NULL;
 
+ALTER TABLE audit_logs
+  MODIFY action VARCHAR(80) NOT NULL,
+  ADD COLUMN IF NOT EXISTS actor INT UNSIGNED NULL;
+
 INSERT IGNORE INTO categories (name) VALUES ('Computer Equipment'), ('Office Furniture'), ('Vehicles'), ('Tools'), ('Other');
 INSERT IGNORE INTO categories (name) VALUES ('Laptop'), ('Forklift'), ('Printer');
 INSERT IGNORE INTO locations (name) VALUES ('Main Office'), ('Warehouse'), ('Field Office'), ('In Transit');

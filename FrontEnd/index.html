@@ -23,6 +23,10 @@
     <label>Password<input name="password" type="password" autocomplete="current-password" required></label>
     <p id="login-error" class="login-error" role="alert" hidden></p>
     <button class="button primary" type="submit">Sign in</button>
+    <div class="clock login-clock" aria-label="Current local time">
+      <i class="bi bi-clock" aria-hidden="true"></i>
+      <div><strong id="login-clock-time">--:--:--</strong><span id="login-clock-date">Loading date...</span></div>
+    </div>
   </form>
 </section>
 
@@ -47,6 +51,10 @@
     </nav>
 
     <div class="sidebar-footer">
+      <div class="clock sidebar-clock" aria-label="Current local time">
+        <i class="bi bi-clock" aria-hidden="true"></i>
+        <div><strong id="sidebar-clock-time">--:--:--</strong><span id="sidebar-clock-date">Loading date...</span></div>
+      </div>
       <div class="user-summary">
         <strong id="current-user-name">User</strong>
         <span id="current-user-role">Staff</span>
@@ -167,6 +175,11 @@
       <section class="panel">
         <h3>Assets</h3>
         <div class="toolbar"><div class="toolbar-actions"><button class="button primary admin-only" id="new-asset">Add asset</button><button class="button manager-or-admin" id="export-assets">Export CSV</button></div><span class="toolbar-note">Tags are generated automatically by category.</span></div>
+        <div class="asset-filter-bar" aria-label="Filter assets by purchase date">
+          <label for="asset-date-from">Purchased from<input id="asset-date-from" type="date"></label>
+          <label for="asset-date-to">Purchased to<input id="asset-date-to" type="date"></label>
+          <button id="clear-asset-date-filter" class="button" type="button">Clear dates</button>
+        </div>
         <div class="table-wrap">
           <table>
             <thead>
@@ -279,13 +292,13 @@
       <label>Location<select name="location_id" id="asset-location"><option value="">Unassigned</option></select></label>
       <label>Assigned to<select name="assigned_to" id="asset-assignee"><option value="">Unassigned</option></select></label>
       <label>Condition<select name="status"><option value="working">Working</option><option value="repair">Repair</option><option value="retired">Retired</option></select></label>
-      <label class="admin-edit-only">Purchase cost<input name="purchase_cost" type="number" min="0" step="0.01" value="0"></label>
-      <label class="admin-edit-only">Serial number<input name="serial_number" maxlength="160"></label>
-      <label class="admin-edit-only">Supplier<input name="supplier" maxlength="160"></label>
-      <label class="admin-edit-only">Useful life (years)<input name="useful_life_years" type="number" min="0.1" step="0.1" value="5"></label>
-      <label class="admin-edit-only">Salvage value<input name="salvage_value" type="number" min="0" step="0.01" value="0"></label>
-      <label class="admin-edit-only">Current value<input name="current_value" type="number" min="0" step="0.01" value="0"></label>
-      <label class="admin-edit-only">Purchase date<input name="purchase_date" type="date"></label>
+      <label class="admin-edit-only">Purchase cost<input name="purchase_cost" type="number" min="0" step="0.01" value="0" required></label>
+      <label class="admin-edit-only">Serial number<input name="serial_number" maxlength="160" required></label>
+      <label class="admin-edit-only">Supplier<input name="supplier" maxlength="160" required></label>
+      <label class="admin-edit-only">Useful life (years)<input name="useful_life_years" type="number" min="0.1" step="0.1" value="5" required></label>
+      <label class="admin-edit-only">Salvage value<input name="salvage_value" type="number" min="0" step="0.01" value="0" required></label>
+      <label class="admin-edit-only">Current value<input name="current_value" type="number" min="0" step="0.01" value="0" required></label>
+      <label class="admin-edit-only">Purchase date<input name="purchase_date" type="date" required></label>
       <label class="wide admin-edit-only">Description<textarea name="description" rows="2"></textarea></label>
       <div class="form-actions wide"><button class="button primary" type="submit">Save asset</button><button class="button" type="button" data-close-modal>Cancel</button></div>
     </form>
